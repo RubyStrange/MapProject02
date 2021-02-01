@@ -16,7 +16,10 @@ namespace MapProject02
 {
     public partial class FormMapBoard : Form
     {
-        //meJsonControl jsc = new meJsonControl() ;
+        meJsonControl meJC = new meJsonControl(); //实例化mejsoncotrol
+        double zoom = 7;
+        int disX = -450;
+        int disY = -80;
 
         public FormMapBoard()
         {
@@ -25,17 +28,20 @@ namespace MapProject02
 
         private void FormMapBoard_Load(object sender, EventArgs e)
         {
-
+           
         }
 
 
-        double zoom = 7;
-        int disX = -450;
-        int disY = -80;
         private void btnJsonLoad_Click(object sender, EventArgs e)
         {
-
-            meJsonControl.DrawPolygon(meJsonControl.GetPointList(zoom,disX,disY,meDataSource.readJson()[0][0],this.pictureBox1), this.pictureBox1);
+            BaiduMapBrowser.Visible = false;
+            pictureBox1.Visible = true;
+            pictureBox1.Refresh();
+            zoom = 7;
+            disX = -450;
+            disY = -80;
+            meJC.DrawMap(zoom, disX, disY, this.pictureBox1);
+            //meJC.DrawPolygon(meJC.GetPointList(zoom,disX,disY,meDataSource.readJson()[0][0],this.pictureBox1), this.pictureBox1);
 
             //btnJsonLoad.Text= jsc.readJson();
 
@@ -44,6 +50,14 @@ namespace MapProject02
 
         private void button1_Click(object sender, EventArgs e)
         {
+
+            pictureBox1.Visible = false;
+            BaiduMapBrowser.Visible = true;
+            BaiduMapBrowser.ScriptErrorsSuppressed = true;
+            string pathName = meSupFunc.GetProjectRootPath() + "\\BaiduMapHtml.html";
+            BaiduMapBrowser.Navigate(pathName);
+
+
             ////Chart chart = new Chart();
             ////ChartType chartType = ChartType.Histogram;
             ////string path = @"..\..\JSON.json";
@@ -87,7 +101,8 @@ namespace MapProject02
                 //pictureBox1.Invalidate();
                 disX =disX+(Cursor.Position.X - mouseDownPoint.X);
                 disY =disY- (Cursor.Position.Y - mouseDownPoint.Y);
-                meJsonControl.DrawPolygon(meJsonControl.GetPointList(zoom, disX, disY, meDataSource.readJson()[0][0], this.pictureBox1), this.pictureBox1);
+                meJC.DrawMap(zoom, disX, disY, this.pictureBox1);
+                //meJC.DrawPolygon(meJC.GetPointList(zoom, disX, disY, meDataSource.readJson()[0][0], this.pictureBox1), this.pictureBox1);
 
                 mouseDownPoint.X = Cursor.Position.X;
                 mouseDownPoint.Y = Cursor.Position.Y;
@@ -114,12 +129,39 @@ namespace MapProject02
         }
 
 
+        //int markzoom=0;
+        double zoomtime;
         private void pictureBox1_MouseWheel(object sender, System.Windows.Forms.MouseEventArgs e)
         {
             //MessageBox.Show("滚动事件已被捕捉");
-            Size t = new Size(0, 0); //t的属性为滚轮滚动的变化值可以结合控件的尺寸(+t)，实现滚轮随放。
-            t.Width += e.Delta;
-            t.Height += e.Delta;
+            //markzoom++;
+            //if (markzoom % 25 != 1)
+            //{
+            //    //return;
+            //}
+            pictureBox1.Refresh();
+
+            {
+                if (e.Delta > 0)
+                { zoomtime = 1.1; }
+                else
+                { zoomtime = 0.9; }
+                
+            }
+            int poX = Cursor.Position.X - disX;  //注：全局变量mouseDownPoint前面已定义为Point类型
+            int poY = Cursor.Position.Y - disY;
+
+            int xadd = (int)((poX  - poX/zoomtime)  );
+            int yadd = (int)((poY  - poY/zoomtime)  );
+            meJC.DrawMap(zoom *= zoomtime, disX -= xadd, disY -= yadd, this.pictureBox1);
+            //meJC.DrawPolygon(meJC.GetPointList(zoom *= zoomtime, disX-=xadd, disY-=yadd, meDataSource.readJson()[0][0], this.pictureBox1), this.pictureBox1);
+
+
+
+
+            //Size t = new Size(0, 0); //t的属性为滚轮滚动的变化值可以结合控件的尺寸(+t)，实现滚轮随放。
+            //t.Width += e.Delta;
+            //t.Height += e.Delta;
         }
     }
 }

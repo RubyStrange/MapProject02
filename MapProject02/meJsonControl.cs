@@ -10,10 +10,24 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 namespace MapProject02
 {
-    public static  class meJsonControl
+    public  class meJsonControl
     {
+        private List<List<List<List<double>>>> _JsonList;
+        public  meJsonControl()
+        {
+            _JsonList = meDataSource.readJson();
+        }
 
-        public static void DrawPolygon(Point[] PointList , Control control)
+        public  void DrawMap(double zoom, int disX, int disY, Control control)
+        {
+            for (int i = 0; i < _JsonList.Count(); i++)
+            {
+                DrawPolygon(GetPointList(zoom, disX, disY, _JsonList[i][0], control), control);
+            }
+        }
+
+
+        public  void DrawPolygon(Point[] PointList , Control control)
         {
             Graphics g = control.CreateGraphics();
             Pen pen = new Pen(Brushes.Red);
@@ -23,7 +37,7 @@ namespace MapProject02
 
 
 
-        public static Point[] GetPointList(double zoom, int disX,int disY, List<List<double>> readJson, Control control) 
+        public  Point[] GetPointList(double zoom, int disX,int disY, List<List<double>> readJson, Control control) 
         {
             Point[] pointlist = new Point[readJson.Count()];
 

@@ -1,0 +1,26 @@
+﻿
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+    <style type="text/css">
+        body,#l-map {
+            height: 100%;
+            width: 100%;
+        }
+
+    </style>
+    <script type="text/javascript" src="http://api.map.baidu.com/api?v=2.0&ak=8zno3zlbYzt0AzIRllHac0KuoM51sW8M"></script>
+    <title>百度地图</title>
+</head>
+<body>
+    <div id="l-map"></div>
+</body>
+</html>
+<script type="text/javascript">
+    // 百度地图API功能
+    var map = new BMap.Map("l-map");
+    map.centerAndZoom(new BMap.Point(103.404, 35.915),4);
+    map.enableScrollWheelZoom(true);
+   
+</script>
